@@ -1,0 +1,35 @@
+# IDEs
+**/.idea
+**/.vscode/*
+!**/.vscode/extensions.json
+
+# System
+**/.DS_Store
+
+# Package Manager
+**/node_modules
+**/.pnpm-store
+**/.pnpm-debug.log*
+
+# WXT
+.wxt/
+.output/
+stats.html
+
+# Agent tooling / planning artifacts
+.agents/
+*.mov
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Store video recordings (track final demo video, ignore raw captures and temp files)
+store/video/raw/
+store/video/temp/
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
