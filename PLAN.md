@@ -45,12 +45,55 @@ This document records all **17 architectural decisions** resolved during the _Gr
 
 ### 2.2 Monaco & VS Code API Strategy (Q3, Q8)
 
-- Use **`@codingame/monaco-vscode-api` with granular service overrides** (`textmate`, `theme`, `languages`, `configuration`, `keybindings`, `extensions`) inside the custom Vue 3 Workbench (avoiding the monolithic `workbench-service-override`).
-- **Manifest V3 CSP**: `"extension_pages": "script-src 'self' 'wasm-unsafe-eval'; worker-src 'self';"` to support Monaco Web Workers and `vscode-oniguruma` WASM.
-- **Store Policy Compliance (Chrome Web Store & Firefox AMO Anti-RCE)**:
-  - Pre-bundle default language extensions (`@codingame/monaco-vscode-*-default-extension`) as lazy-loaded build chunks.
-  - Dynamically install declarative extensions from **OpenVSX** in Approach A (themes, icon themes, `.tmLanguage` grammars, snippets, keymaps).
-  - Reserve arbitrary third-party JS/Node `.vsix` code execution for the local companion binary's Extension Host in Approach B.
+- Use **`@codingame/monaco-vscode-api` (`38.0.4`) in Full Workbench Mode (`getWorkbenchServiceOverride`)** identical to the official CodinGame workbench demo (`demo/src/setup.workbench.classic.ts`):
+  - Do NOT mix `getViewsServiceOverride` with `getWorkbenchServiceOverride`: `getWorkbenchServiceOverride` natively manages the full VS Code window layout (`BrowserWindow`, Activity Bar, Sidebar, Editor Groups, Bottom Panel, Status Bar, Title Bar, and Menus) within a single root container element (`#workbenchHost`).
+  - **Workspace & File Explorer Initialization**:
+    - Use `RegisteredFileSystemProvider(false)` and `RegisteredMemoryFile` from `@codingame/monaco-vscode-files-service-override` to register the virtual workspace file (`/workspace.code-workspace`) and initial workspace files (`/workspace/src/index.ts`, `/workspace/package.json`, `/workspace/README.md`).
+    - Register the provider with `registerFileSystemOverlay(1, fileSystemProvider)`.
+    - Provide `workspaceProvider` in `IWorkbenchConstructionOptions` pointing to `workspace: { workspaceUri: vscode.Uri.file('/workspace.code-workspace') }`.
+    - Configure `defaultLayout.editors` in construction options so `/workspace/src/index.ts` is open on initial boot.
+  - **File Icon Themes & Declarative Extensions**:
+    - Include `@codingame/monaco-vscode-theme-seti-default-extension` and configure `workbench.iconTheme: "vs-seti"` so the Explorer tree displays real file type icons (`.ts`, `.json`, `.md`, directories, etc.).
+    - Include theme defaults (`@codingame/monaco-vscode-theme-defaults-default-extension`) with `workbench.colorTheme: "Default Dark Modern"`.
+    - Include language extensions (`typescript-basics`, `javascript`, `json`, `html`, `css`, `markdown-basics`, `yaml`, `python`, `rust`, `go`, `shellscript`).
+  - **Web Workers & Manifest V3 CSP**:
+    - In `wxt.config.ts`, configure `worker-src 'self' blob: http://localhost:3000 http://127.0.0.1:3000;` in development mode, and `worker-src 'self';` in production mode (since Chrome MV3 disallows `blob:` in production extension page CSP; bundled module workers are served from `'self'`).
+    - Wire `MonacoEnvironment` without unhandled CSP violations.
+  - **Canonical Patch**:
+    - Use canonical `pnpm patch` on `@codingame/monaco-vscode-api@38.0.4` (`vs/base/browser/dom.js`) to replace `mainWindow.Function(...)` with an IIFE for strict Manifest V3 Content Security Policy compliance.
+  - **Vue 3 WebExtension Host Shell**:
+    - Vue 3 serves as the clean, full-bleed (`100vw` × `100vh`) application host in `App.vue`: `#workbenchHost` mounts the native VS Code workbench directly across the entire viewport without custom outer headers or duplicate navigation bars, matching the official CodinGame Full Workbench demo experience.
+  - **Native Service Overrides Ecosystem**:
+    - In addition to `workbench`, `files`, and `model`, the workbench integrates:
+      - `@codingame/monaco-vscode-view-title-bar-service-override` (native top title bar & menus)
+      - `@codingame/monaco-vscode-explorer-service-override` (Explorer view container)
+      - `@codingame/monaco-vscode-outline-service-override` & `@codingame/monaco-vscode-timeline-service-override` (Explorer secondary viewlets)
+      - `@codingame/monaco-vscode-search-service-override` (Find in workspace)
+      - `@codingame/monaco-vscode-scm-service-override` (Source control view slot)
+      - `@codingame/monaco-vscode-debug-service-override` (Run & Debug view slot)
+      - `@codingame/monaco-vscode-testing-service-override` (Testing view slot)
+      - `@codingame/monaco-vscode-extensions-service-override` (Extensions view slot with `enableWorkerExtensionHost: false` via `vscode/localExtensionHost`)
+      - `@codingame/monaco-vscode-preferences-service-override` (Settings editor & keybindings)
+      - `@codingame/monaco-vscode-quickaccess-service-override` (Command palette & quick pick)
+      - `@codingame/monaco-vscode-statusbar-service-override` (native status bar)
+      - `@codingame/monaco-vscode-snippets-service-override` (language snippets)
+  - **Web Workers & Manifest V3 CSP**:
+    - Extension workers are compiled as dedicated WXT unlisted scripts (`src/entrypoints/monaco-editor.worker.ts` and `src/entrypoints/monaco-textmate.worker.ts`) and loaded via `browser.runtime.getURL(...)` as `'self'`. This complies strictly with Chrome MV3 CSP (`worker-src 'self';`) and eliminates renderer crashes (`RESULT_CODE_KILLED_BAD_MESSAGE`).
+  - **Milestone Boundaries**:
+    - **Jalon 1 (Current)**: Full-bleed VS Code Workbench layout matching CodinGame demo with in-memory seeded workspace files (`/workspace/src/index.ts`, `package.json`, `README.md`), native theme picker (⚙️ -> Themes -> Color Theme) with all default themes (`Light Modern`, `Dark Modern`, `Dark+`, `Light+`), full TextMate syntax highlighting for TS/JS/JSON/HTML/CSS/MD/YAML/Python/Rust/Go/Shell, full Activity Bar with Explorer (Outline & Timeline), Search, SCM, Debug, Extensions, Testing, Settings gear, context menus, and native quick access/command palette.
+    - **Jalon 2**: File System Access API & OPFS (`ChromiumLocalFsProvider`, `OpfsProvider`, Open Folder dialog, real disk persistence).
+    - **Jalon 3**: Real Git SCM backend (`IsomorphicGitProvider`, GitHub/GitLab clone, stage/commit/diff).
+    - **Jalon 4**: Settings persistence & sync.
+    - **Jalon 5**: OpenVSX live marketplace extension search & download.
+    - **Jalon 6**: Native Companion Host.
+    - E2E tests must NOT merely check `.toBeAttached()` on generic containers: they must assert functional rendering:
+      1. Zero console errors (`console.error` and `pageerror`).
+      2. Zero CSP violations (`EvalError`, `worker-src`).
+      3. Active editor tab visible with file title and breadcrumbs.
+      4. Explorer sidebar populated with directory tree nodes and file items.
+      5. Activity Bar icons visible with proper tooltips.
+      6. Status Bar visible with line/col, encoding, and language mode.
+      7. Color theme switching cascading to all native workbench parts without style desync.
 
 ---
 

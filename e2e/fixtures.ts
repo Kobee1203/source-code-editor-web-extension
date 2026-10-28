@@ -55,11 +55,19 @@ export const test = base.extend<{
   },
 
   extensionId: async ({ context }, use) => {
-    let [background] = context.serviceWorkers();
+    let background = context.serviceWorkers()[0];
     if (!background) {
-      background = await context.waitForEvent('serviceworker', {
-        timeout: 10_000,
-      });
+      background = await Promise.race([
+        context.waitForEvent('serviceworker', { timeout: 15_000 }),
+        (async () => {
+          for (let i = 0; i < 30; i++) {
+            await new Promise((r) => setTimeout(r, 500));
+            const sw = context.serviceWorkers()[0];
+            if (sw) return sw;
+          }
+          throw new Error('Timeout waiting for service worker polling');
+        })(),
+      ]);
     }
     const url = background.url();
     const match = /chrome-extension:\/\/([a-z0-9]+)/.exec(url);

@@ -127,6 +127,34 @@ vi.mock('#i18n', () => ({
   },
 }));
 
+// Polyfill CSSStyleSheet for happy-dom environment to prevent Monaco CSS injector from failing
+if (typeof CSSStyleSheet !== 'undefined') {
+  const replaceDescriptor = Object.getOwnPropertyDescriptor(CSSStyleSheet.prototype, 'replace');
+  const originalReplace = typeof replaceDescriptor?.value === 'function' ? replaceDescriptor.value : undefined;
+  CSSStyleSheet.prototype.replace = async function (this: CSSStyleSheet, text: string) {
+    if (originalReplace) {
+      await Reflect.apply(originalReplace, this, [text]);
+    }
+    return this;
+  };
+
+  const descriptor = Object.getOwnPropertyDescriptor(CSSStyleSheet.prototype, 'cssRules');
+  if (!descriptor?.get) {
+    Object.defineProperty(CSSStyleSheet.prototype, 'cssRules', {
+      get() {
+        return [];
+      },
+      configurable: true,
+    });
+  }
+}
+
+if (typeof window !== 'undefined' && typeof window.document !== 'undefined') {
+  if (!window.document.adoptedStyleSheets) {
+    window.document.adoptedStyleSheets = [];
+  }
+}
+
 beforeEach(() => {
   registeredListeners.onInstalled.length = 0;
   registeredListeners.onActionClicked.length = 0;

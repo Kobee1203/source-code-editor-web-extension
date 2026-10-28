@@ -1,5 +1,3 @@
-export type LaunchMode = 'tab' | 'popup';
-
 export type RuntimeMode = 'standalone-web' | 'local-companion';
 
 export interface WorkspaceQuery {
@@ -11,31 +9,18 @@ export interface OpenEditorRequest {
   type: 'OPEN_EDITOR';
   workspaceId?: string;
   repoUrl?: string;
-  launchMode?: LaunchMode;
 }
 
 export interface OpenRepositoryRequest {
   type: 'OPEN_REPOSITORY';
   repoUrl: string;
-  launchMode?: LaunchMode;
 }
 
-export interface GetLaunchModeRequest {
-  type: 'GET_LAUNCH_MODE';
-}
-
-export interface SetLaunchModeRequest {
-  type: 'SET_LAUNCH_MODE';
-  launchMode: LaunchMode;
-}
-
-export type RuntimeMessage = OpenEditorRequest | OpenRepositoryRequest | GetLaunchModeRequest | SetLaunchModeRequest;
+export type RuntimeMessage = OpenEditorRequest | OpenRepositoryRequest;
 
 export interface RuntimeSuccessResponse {
   ok: true;
-  launchMode: LaunchMode;
   tabId?: number;
-  windowId?: number;
   editorUrl?: string;
 }
 
@@ -110,10 +95,6 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
-export function isLaunchMode(value: unknown): value is LaunchMode {
-  return value === 'tab' || value === 'popup';
-}
-
 export function isRuntimeMessage(value: unknown): value is RuntimeMessage {
   if (!isRecord(value) || typeof value.type !== 'string') {
     return false;
@@ -123,17 +104,11 @@ export function isRuntimeMessage(value: unknown): value is RuntimeMessage {
     case 'OPEN_EDITOR': {
       const validWorkspace = value.workspaceId === undefined || typeof value.workspaceId === 'string';
       const validRepo = value.repoUrl === undefined || typeof value.repoUrl === 'string';
-      const validMode = value.launchMode === undefined || isLaunchMode(value.launchMode);
-      return validWorkspace && validRepo && validMode;
+      return validWorkspace && validRepo;
     }
     case 'OPEN_REPOSITORY': {
-      const validMode = value.launchMode === undefined || isLaunchMode(value.launchMode);
-      return typeof value.repoUrl === 'string' && value.repoUrl.trim().length > 0 && validMode;
+      return typeof value.repoUrl === 'string' && value.repoUrl.trim().length > 0;
     }
-    case 'GET_LAUNCH_MODE':
-      return true;
-    case 'SET_LAUNCH_MODE':
-      return isLaunchMode(value.launchMode);
     default:
       return false;
   }
