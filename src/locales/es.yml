@@ -1,0 +1,41 @@
+# Extension Manifest & Browser Integration
+extName: 'Source Code Editor'
+extDescription: 'IDE en el navegador inspirado en VS Code con sistema de archivos local, OPFS, Git y OpenVSX.'
+actionTitle: 'Abrir Source Code Editor'
+commandOpenEditor: 'Abrir el entorno de Source Code Editor'
+contextMenuOpenRepo: 'Abrir repositorio en Source Code Editor'
+
+# Workbench Activity Bar
+activityExplorer: 'Explorador'
+activitySearch: 'Buscar'
+activityScm: 'Control de código fuente'
+activityExtensions: 'Extensiones'
+activitySettings: 'Configuración'
+activityThemeToggle: 'Cambiar tema de color'
+
+# Sidebar Views
+sidebarExplorerEmpty: 'Aún no se ha abierto ninguna carpeta o repositorio.'
+sidebarSearchPlaceholder: 'Buscar en los archivos del espacio de trabajo...'
+sidebarSearchEmpty: 'Introduzca un término para buscar coincidencias en su espacio de trabajo.'
+sidebarScmEmpty: 'No hay ningún repositorio Git inicializado en el espacio de trabajo actual.'
+sidebarExtensionsEmpty: 'Busque en OpenVSX temas, iconos, gramáticas y fragmentos declarativos.'
+
+# Welcome View
+welcomeTitle: 'Source Code Editor'
+welcomeSubtitle: 'IDE nativo del navegador impulsado por Monaco y servicios de VS Code'
+welcomeOpenLocalFolderTitle: 'Abrir carpeta local'
+welcomeOpenLocalFolderDesc: 'Monte un directorio local mediante File System Access API o impórtelo en OPFS.'
+welcomeCloneRepoTitle: 'Clonar / Abrir repositorio remoto'
+welcomeCloneRepoDesc: 'Clone cualquier repositorio de GitHub o GitLab en Origin Private File System.'
+welcomeRecentWorkspacesTitle: 'Espacios de trabajo recientes'
+welcomeRecentWorkspacesDesc: 'Vuelva a abrir carpetas montadas y repositorios clonados anteriormente.'
+welcomeActiveWorkspaceBadge: 'Espacio de trabajo activo'
+welcomeActiveRepoBadge: 'Repositorio activo'
+
+# Status Bar
+statusBranchMain: 'main'
+statusProblemsCount: '0 Problemas'
+statusLaunchModeTab: 'Inicio: Pestaña'
+statusLaunchModePopup: 'Inicio: Ventana emergente'
+statusRuntimeStandalone: 'Web Autónomo'
+statusRuntimeCompanion: 'Compañero Local'

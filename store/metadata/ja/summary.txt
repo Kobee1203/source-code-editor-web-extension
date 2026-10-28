@@ -1,0 +1,1 @@
+ローカルFS、OPFS、Git、OpenVSX拡張機能に対応したVS Code風ブラウザIDE。

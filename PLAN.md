@@ -3,7 +3,7 @@
 > **Reference Conversation**: `8903e651-726b-407e-893d-a67d2e8f583e`
 > **Reference Infrastructure Repo**: `/Users/ndossantos/Developments/workspaces/source-viewer-web-extension`
 
-This document records all **17 architectural decisions** resolved during the *Grill-Me* design phase, the mandatory **5-Agent Development Pipeline**, and the milestone roadmap (Jalons 0 to 6).
+This document records all **17 architectural decisions** resolved during the _Grill-Me_ design phase, the mandatory **5-Agent Development Pipeline**, and the milestone roadmap (Jalons 0 to 6).
 
 ---
 
@@ -22,7 +22,7 @@ This document records all **17 architectural decisions** resolved during the *Gr
   - GitHub Actions workflows (`.github/workflows/validate.yml` and `release.yml` with `wxt submit` for Chrome, Firefox, and Edge)
 - **Browser Entrypoints & Launch Modes (Q2)**:
   1. Clicking the extension toolbar icon (or global shortcut) opens `editor.html` in a dedicated browser tab **or** a standalone `popup` window (`browser.windows.create({ type: 'popup' })`, configurable in settings so shortcuts like `Ctrl+W`/`Cmd+W` can be captured).
-  2. Context menu / action on GitHub or GitLab repository pages: *"Open repository in Source Code Editor"*.
+  2. Context menu / action on GitHub or GitLab repository pages: _"Open repository in Source Code Editor"_.
   3. **Zero permanent content scripts** injected across arbitrary web pages.
 
 ---
@@ -30,6 +30,7 @@ This document records all **17 architectural decisions** resolved during the *Gr
 ## 2. Core Architecture: 3-Layer Clean Architecture + `@codingame/monaco-vscode-api` (Q3, Q8, Q14, Q15)
 
 ### 2.1 Three-Layer Separation (`src/`)
+
 1. **Layer 1 — Domain & Infrastructure (`src/providers/` & `src/services/`)**:
    - Pure TypeScript modules and classes with **zero Vue dependencies**, unit-testable in milliseconds:
      - `IFileSystemProvider`: `ChromiumLocalFsProvider` (File System Access API `showDirectoryPicker`), `OpfsProvider` (Origin Private File System), and future `NativeHostFsProvider` (Approach B).
@@ -43,6 +44,7 @@ This document records all **17 architectural decisions** resolved during the *Gr
    - Domain-scoped Vue 3 components: `workbench/`, `editor/`, `explorer/`, `search/`, `scm/`, `extensions/`, `settings/`, `welcome/`, `common/`.
 
 ### 2.2 Monaco & VS Code API Strategy (Q3, Q8)
+
 - Use **`@codingame/monaco-vscode-api` with granular service overrides** (`textmate`, `theme`, `languages`, `configuration`, `keybindings`, `extensions`) inside the custom Vue 3 Workbench (avoiding the monolithic `workbench-service-override`).
 - **Manifest V3 CSP**: `"extension_pages": "script-src 'self' 'wasm-unsafe-eval'; worker-src 'self';"` to support Monaco Web Workers and `vscode-oniguruma` WASM.
 - **Store Policy Compliance (Chrome Web Store & Firefox AMO Anti-RCE)**:
@@ -57,7 +59,7 @@ This document records all **17 architectural decisions** resolved during the *Gr
 - **Remote Git Repositories (Q4)**: Shallow clone (`depth: 1` by default, configurable) into **OPFS** via `isomorphic-git`, enabling full offline editing, instant multi-file search, branches, side-by-side diffs, commits, and HTTPS push (CORS-free via extension `host_permissions`).
 - **Firefox Local Folder Fallback in Approach A (Q9)**: Import local directory into **OPFS** via `webkitdirectory` / Drag & Drop, allowing full editing, direct Git commit/push, and `.zip` export, with a non-intrusive banner explaining that direct disk write on Firefox requires either Git push/ZIP export or the optional companion app (Approach B).
 - **File Saving Strategy (Q10)**: Manual `Ctrl+S` / `Cmd+S` by default with dirty indicator (`●`) and automatic session draft backup, plus configurable `files.autoSave` (`off`, `afterDelay`, `onFocusChange`).
-- **Welcome View & Multi-Workspaces (Q11)**: Welcome screen with *Open Local Folder*, *Clone / Open Remote Repository*, and *Recent Workspaces* (persisted in IndexedDB). Multi-workspace support via URL parameter (`editor.html?workspace=<id>`).
+- **Welcome View & Multi-Workspaces (Q11)**: Welcome screen with _Open Local Folder_, _Clone / Open Remote Repository_, and _Recent Workspaces_ (persisted in IndexedDB). Multi-workspace support via URL parameter (`editor.html?workspace=<id>`).
 - **Workbench Layout (Q6)**:
   - **Activity Bar (4 views)**: File Explorer, Global Search (`Ctrl+Shift+F`), Git Source Control (with side-by-side Monaco Diff Editor), Extensions (OpenVSX).
   - **Central Editor Area**: Multi-tab editor groups, horizontal/vertical split-view, breadcrumbs, Command Palette (`Ctrl+Shift+P` / `F1`), dual UI/JSON Settings & Keybindings editor.

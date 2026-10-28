@@ -1,0 +1,1 @@
+VS Code-inspired browser IDE with local file system, OPFS, Git, and OpenVSX extension support.

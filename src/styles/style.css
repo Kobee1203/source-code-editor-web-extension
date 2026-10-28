@@ -1,0 +1,59 @@
+:root {
+  --workbench-bg: #1e1e1e;
+  --workbench-fg: #ccc;
+  --activity-bar-bg: #333;
+  --activity-bar-fg: #858585;
+  --activity-bar-active-fg: #fff;
+  --activity-bar-active-border: #007acc;
+  --sidebar-bg: #252526;
+  --sidebar-fg: #ccc;
+  --sidebar-header-fg: #bbb;
+  --editor-bg: #1e1e1e;
+  --editor-card-bg: #252526;
+  --editor-card-hover-bg: #2a2d2e;
+  --editor-card-border: #3c3c3c;
+  --panel-border: #2b2b2b;
+  --status-bar-bg: #007acc;
+  --status-bar-fg: #fff;
+  --status-bar-hover-bg: rgb(255 255 255 / 12%);
+  --accent-primary: #007acc;
+  --badge-bg: #0e639c;
+  --badge-fg: #fff;
+  --muted-fg: #9da5b4;
+  --input-bg: #3c3c3c;
+  --input-fg: #ccc;
+  --input-border: #454545;
+  --font-sans: -apple-system, blinkmacsystemfont, 'Segoe UI', roboto, oxygen, ubuntu, cantarell, sans-serif;
+  --font-mono: 'SFMono-Regular', consolas, 'Liberation Mono', menlo, monospace;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body,
+#app {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--workbench-fg);
+  background-color: var(--workbench-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+}

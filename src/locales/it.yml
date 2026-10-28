@@ -1,0 +1,41 @@
+# Extension Manifest & Browser Integration
+extName: 'Source Code Editor'
+extDescription: 'IDE nel browser ispirato a VS Code con file system locale, OPFS, Git e supporto OpenVSX.'
+actionTitle: 'Apri Source Code Editor'
+commandOpenEditor: 'Apri il workbench Source Code Editor'
+contextMenuOpenRepo: 'Apri repository in Source Code Editor'
+
+# Workbench Activity Bar
+activityExplorer: 'Esplora'
+activitySearch: 'Cerca'
+activityScm: 'Controllo del codice sorgente'
+activityExtensions: 'Estensioni'
+activitySettings: 'Impostazioni'
+activityThemeToggle: 'Cambia tema colore'
+
+# Sidebar Views
+sidebarExplorerEmpty: 'Nessuna cartella o repository ancora aperto.'
+sidebarSearchPlaceholder: 'Cerca nei file dello spazio di lavoro...'
+sidebarSearchEmpty: 'Inserisci un termine per trovare corrispondenze nello spazio di lavoro.'
+sidebarScmEmpty: 'Nessun repository Git inizializzato nello spazio di lavoro corrente.'
+sidebarExtensionsEmpty: 'Cerca su OpenVSX temi, icone, grammatiche e snippet dichiarativi.'
+
+# Welcome View
+welcomeTitle: 'Source Code Editor'
+welcomeSubtitle: 'IDE nativo per browser basato su Monaco e servizi VS Code'
+welcomeOpenLocalFolderTitle: 'Apri cartella locale'
+welcomeOpenLocalFolderDesc: 'Monta una directory locale tramite File System Access API o importa in OPFS.'
+welcomeCloneRepoTitle: 'Clona / Apri repository remoto'
+welcomeCloneRepoDesc: 'Clona qualsiasi repository GitHub o GitLab in Origin Private File System.'
+welcomeRecentWorkspacesTitle: 'Spazi di lavoro recenti'
+welcomeRecentWorkspacesDesc: 'Riapri cartelle montate e repository clonati in precedenza.'
+welcomeActiveWorkspaceBadge: 'Spazio di lavoro attivo'
+welcomeActiveRepoBadge: 'Repository attivo'
+
+# Status Bar
+statusBranchMain: 'main'
+statusProblemsCount: '0 Problemi'
+statusLaunchModeTab: 'Avvio: Scheda'
+statusLaunchModePopup: 'Avvio: Finestra Popup'
+statusRuntimeStandalone: 'Web Autonomo'
+statusRuntimeCompanion: 'Companion Locale'

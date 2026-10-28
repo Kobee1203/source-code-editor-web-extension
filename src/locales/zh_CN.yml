@@ -1,0 +1,41 @@
+# Extension Manifest & Browser Integration
+extName: 'Source Code Editor'
+extDescription: '受 VS Code 启发的浏览器 IDE，支持本地文件系统、OPFS、Git 与 OpenVSX 扩展。'
+actionTitle: '打开 Source Code Editor'
+commandOpenEditor: '打开 Source Code Editor 工作台'
+contextMenuOpenRepo: '在 Source Code Editor 中打开仓库'
+
+# Workbench Activity Bar
+activityExplorer: '资源管理器'
+activitySearch: '搜索'
+activityScm: '源代码管理'
+activityExtensions: '扩展'
+activitySettings: '设置'
+activityThemeToggle: '切换颜色主题'
+
+# Sidebar Views
+sidebarExplorerEmpty: '尚未打开任何文件夹或仓库。'
+sidebarSearchPlaceholder: '在工作区文件中搜索...'
+sidebarSearchEmpty: '输入搜索词以在工作区中查找匹配项。'
+sidebarScmEmpty: '当前工作区尚未初始化 Git 仓库。'
+sidebarExtensionsEmpty: '在 OpenVSX 中搜索声明式主题、图标、语法和代码片段。'
+
+# Welcome View
+welcomeTitle: 'Source Code Editor'
+welcomeSubtitle: '由 Monaco 与 VS Code 服务驱动的浏览器原生 IDE'
+welcomeOpenLocalFolderTitle: '打开本地文件夹'
+welcomeOpenLocalFolderDesc: '通过 File System Access API 挂载本地目录或导入到 OPFS。'
+welcomeCloneRepoTitle: '克隆 / 打开远程仓库'
+welcomeCloneRepoDesc: '将任何 GitHub 或 GitLab 仓库浅克隆到 Origin Private File System。'
+welcomeRecentWorkspacesTitle: '最近的工作区'
+welcomeRecentWorkspacesDesc: '重新打开之前挂载的文件夹和克隆的仓库。'
+welcomeActiveWorkspaceBadge: '当前工作区'
+welcomeActiveRepoBadge: '当前仓库'
+
+# Status Bar
+statusBranchMain: 'main'
+statusProblemsCount: '0 个问题'
+statusLaunchModeTab: '启动: 标签页'
+statusLaunchModePopup: '启动: 独立弹窗'
+statusRuntimeStandalone: '独立 Web 模式'
+statusRuntimeCompanion: '本地伴侣模式'

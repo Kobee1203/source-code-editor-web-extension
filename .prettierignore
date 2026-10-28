@@ -1,0 +1,8 @@
+.output
+.wxt
+node_modules
+pnpm-lock.yaml
+playwright-report
+test-results
+blob-report
+store/metadata/**/summary.txt

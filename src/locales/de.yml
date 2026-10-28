@@ -1,0 +1,41 @@
+# Extension Manifest & Browser Integration
+extName: 'Source Code Editor'
+extDescription: 'VS Code-inspirierte Browser-IDE mit lokalem Dateisystem, OPFS, Git und OpenVSX-Unterstützung.'
+actionTitle: 'Source Code Editor öffnen'
+commandOpenEditor: 'Source Code Editor Workbench öffnen'
+contextMenuOpenRepo: 'Repository in Source Code Editor öffnen'
+
+# Workbench Activity Bar
+activityExplorer: 'Explorer'
+activitySearch: 'Suche'
+activityScm: 'Quellcodeverwaltung'
+activityExtensions: 'Erweiterungen'
+activitySettings: 'Einstellungen'
+activityThemeToggle: 'Farbdesign umschalten'
+
+# Sidebar Views
+sidebarExplorerEmpty: 'Noch kein Ordner oder Repository geöffnet.'
+sidebarSearchPlaceholder: 'Arbeitsbereichsdateien durchsuchen...'
+sidebarSearchEmpty: 'Geben Sie einen Suchbegriff ein, um im Arbeitsbereich zu suchen.'
+sidebarScmEmpty: 'Kein Git-Repository im aktuellen Arbeitsbereich initialisiert.'
+sidebarExtensionsEmpty: 'Durchsuchen Sie OpenVSX nach deklarativen Designs, Icons, Grammatiken und Snippets.'
+
+# Welcome View
+welcomeTitle: 'Source Code Editor'
+welcomeSubtitle: 'Browser-native IDE auf Basis von Monaco & VS Code-Diensten'
+welcomeOpenLocalFolderTitle: 'Lokalen Ordner öffnen'
+welcomeOpenLocalFolderDesc: 'Lokales Verzeichnis über File System Access API einbinden oder in OPFS importieren.'
+welcomeCloneRepoTitle: 'Remote-Repository klonen / öffnen'
+welcomeCloneRepoDesc: 'GitHub- oder GitLab-Repository flach in das Origin Private File System klonen.'
+welcomeRecentWorkspacesTitle: 'Zuletzt verwendete Arbeitsbereiche'
+welcomeRecentWorkspacesDesc: 'Zuvor eingebundene Ordner und geklonte Repositories erneut öffnen.'
+welcomeActiveWorkspaceBadge: 'Aktiver Arbeitsbereich'
+welcomeActiveRepoBadge: 'Aktives Repository'
+
+# Status Bar
+statusBranchMain: 'main'
+statusProblemsCount: '0 Probleme'
+statusLaunchModeTab: 'Start: Tab'
+statusLaunchModePopup: 'Start: Popup-Fenster'
+statusRuntimeStandalone: 'Standalone Web'
+statusRuntimeCompanion: 'Lokaler Begleiter'
