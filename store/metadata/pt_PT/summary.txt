@@ -1,0 +1,1 @@
+IDE no navegador inspirado no VS Code com sistema de ficheiros local, OPFS, Git e OpenVSX.

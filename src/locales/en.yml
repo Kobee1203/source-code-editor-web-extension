@@ -1,0 +1,41 @@
+# Extension Manifest & Browser Integration
+extName: 'Source Code Editor'
+extDescription: 'VS Code-inspired browser IDE with local file system, OPFS, Git, and OpenVSX extension support.'
+actionTitle: 'Open Source Code Editor'
+commandOpenEditor: 'Open Source Code Editor workbench'
+contextMenuOpenRepo: 'Open repository in Source Code Editor'
+
+# Workbench Activity Bar
+activityExplorer: 'Explorer'
+activitySearch: 'Search'
+activityScm: 'Source Control'
+activityExtensions: 'Extensions'
+activitySettings: 'Settings'
+activityThemeToggle: 'Toggle Color Theme'
+
+# Sidebar Views
+sidebarExplorerEmpty: 'No folder or repository opened yet.'
+sidebarSearchPlaceholder: 'Search across workspace files...'
+sidebarSearchEmpty: 'Enter a search term to find matches across your workspace.'
+sidebarScmEmpty: 'No Git repository initialized in the current workspace.'
+sidebarExtensionsEmpty: 'Search OpenVSX for declarative themes, icons, grammars, and snippets.'
+
+# Welcome View
+welcomeTitle: 'Source Code Editor'
+welcomeSubtitle: 'Browser-native IDE powered by Monaco & VS Code services'
+welcomeOpenLocalFolderTitle: 'Open Local Folder'
+welcomeOpenLocalFolderDesc: 'Mount a local directory via the File System Access API or import into OPFS.'
+welcomeCloneRepoTitle: 'Clone / Open Remote Repository'
+welcomeCloneRepoDesc: 'Shallow-clone any GitHub or GitLab repository into Origin Private File System.'
+welcomeRecentWorkspacesTitle: 'Recent Workspaces'
+welcomeRecentWorkspacesDesc: 'Reopen previously mounted folders and cloned repositories.'
+welcomeActiveWorkspaceBadge: 'Active Workspace'
+welcomeActiveRepoBadge: 'Active Repository'
+
+# Status Bar
+statusBranchMain: 'main'
+statusProblemsCount: '0 Problems'
+statusLaunchModeTab: 'Launch: Tab'
+statusLaunchModePopup: 'Launch: Popup Window'
+statusRuntimeStandalone: 'Standalone Web'
+statusRuntimeCompanion: 'Local Companion'

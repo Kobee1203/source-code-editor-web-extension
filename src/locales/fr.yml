@@ -1,0 +1,41 @@
+# Extension Manifest & Browser Integration
+extName: 'Source Code Editor'
+extDescription: 'IDE inspiré de VS Code dans le navigateur avec système de fichiers local, OPFS, Git et OpenVSX.'
+actionTitle: 'Ouvrir Source Code Editor'
+commandOpenEditor: 'Ouvrir l’atelier Source Code Editor'
+contextMenuOpenRepo: 'Ouvrir le dépôt dans Source Code Editor'
+
+# Workbench Activity Bar
+activityExplorer: 'Explorateur'
+activitySearch: 'Recherche'
+activityScm: 'Contrôle de code source'
+activityExtensions: 'Extensions'
+activitySettings: 'Paramètres'
+activityThemeToggle: 'Basculer le thème de couleur'
+
+# Sidebar Views
+sidebarExplorerEmpty: 'Aucun dossier ou dépôt ouvert pour le moment.'
+sidebarSearchPlaceholder: 'Rechercher dans les fichiers de l’espace de travail...'
+sidebarSearchEmpty: 'Saisissez un terme pour rechercher dans votre espace de travail.'
+sidebarScmEmpty: 'Aucun dépôt Git initialisé dans l’espace de travail actuel.'
+sidebarExtensionsEmpty: 'Recherchez sur OpenVSX des thèmes, icônes, grammaires et extraits déclaratifs.'
+
+# Welcome View
+welcomeTitle: 'Source Code Editor'
+welcomeSubtitle: 'IDE natif pour navigateur propulsé par Monaco et les services VS Code'
+welcomeOpenLocalFolderTitle: 'Ouvrir un dossier local'
+welcomeOpenLocalFolderDesc: 'Montez un répertoire local via File System Access API ou importez-le dans OPFS.'
+welcomeCloneRepoTitle: 'Cloner / Ouvrir un dépôt distant'
+welcomeCloneRepoDesc: 'Clonez rapidement tout dépôt GitHub ou GitLab dans Origin Private File System.'
+welcomeRecentWorkspacesTitle: 'Espaces de travail récents'
+welcomeRecentWorkspacesDesc: 'Rouvrir les dossiers montés et dépôts clonés précédemment.'
+welcomeActiveWorkspaceBadge: 'Espace de travail actif'
+welcomeActiveRepoBadge: 'Dépôt actif'
+
+# Status Bar
+statusBranchMain: 'main'
+statusProblemsCount: '0 Problème'
+statusLaunchModeTab: 'Ouverture : Onglet'
+statusLaunchModePopup: 'Ouverture : Fenêtre Popup'
+statusRuntimeStandalone: 'Web Autonome'
+statusRuntimeCompanion: 'Compagnon Local'

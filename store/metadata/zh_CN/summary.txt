@@ -1,0 +1,1 @@
+受 VS Code 启发的浏览器 IDE，支持本地文件系统、OPFS、Git 与 OpenVSX 扩展。

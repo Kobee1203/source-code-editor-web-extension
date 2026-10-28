@@ -1,0 +1,1 @@
+IDE nel browser ispirato a VS Code con file system locale, OPFS, Git e supporto OpenVSX.

@@ -1,0 +1,41 @@
+# Extension Manifest & Browser Integration
+extName: 'Source Code Editor'
+extDescription: 'ローカルファイルシステム、OPFS、Git、OpenVSX拡張機能に対応したVS Code風ブラウザIDE。'
+actionTitle: 'Source Code Editor を開く'
+commandOpenEditor: 'Source Code Editor ワークベンチを開く'
+contextMenuOpenRepo: 'リポジトリを Source Code Editor で開く'
+
+# Workbench Activity Bar
+activityExplorer: 'エクスプローラー'
+activitySearch: '検索'
+activityScm: 'ソース管理'
+activityExtensions: '拡張機能'
+activitySettings: '設定'
+activityThemeToggle: 'カラーテーマの切り替え'
+
+# Sidebar Views
+sidebarExplorerEmpty: 'フォルダまたはリポジトリがまだ開かれていません。'
+sidebarSearchPlaceholder: 'ワークスペース内のファイルを検索...'
+sidebarSearchEmpty: '検索語を入力してワークスペース内の一致を検索します。'
+sidebarScmEmpty: '現在のワークスペースに Git リポジトリが初期化されていません。'
+sidebarExtensionsEmpty: 'OpenVSX で宣言型テーマ、アイコン、文法、スニペットを検索します。'
+
+# Welcome View
+welcomeTitle: 'Source Code Editor'
+welcomeSubtitle: 'Monaco と VS Code サービスを搭載したブラウザネイティブ IDE'
+welcomeOpenLocalFolderTitle: 'ローカルフォルダを開く'
+welcomeOpenLocalFolderDesc: 'File System Access API でローカルディレクトリをマウントするか OPFS にインポートします。'
+welcomeCloneRepoTitle: 'リモートリポジトリをクローン / 開く'
+welcomeCloneRepoDesc: 'GitHub または GitLab リポジトリを Origin Private File System にシャロークローンします。'
+welcomeRecentWorkspacesTitle: '最近のワークスペース'
+welcomeRecentWorkspacesDesc: '以前にマウントしたフォルダやクローンしたリポジトリを再度開きます。'
+welcomeActiveWorkspaceBadge: 'アクティブなワークスペース'
+welcomeActiveRepoBadge: 'アクティブなリポジトリ'
+
+# Status Bar
+statusBranchMain: 'main'
+statusProblemsCount: '0 個の問題'
+statusLaunchModeTab: '起動: タブ'
+statusLaunchModePopup: '起動: ポップアップウィンドウ'
+statusRuntimeStandalone: 'スタンドアロン Web'
+statusRuntimeCompanion: 'ローカルコンパニオン'

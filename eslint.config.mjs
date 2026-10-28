@@ -1,0 +1,70 @@
+import { vueTsConfigs, withVueTs } from '@vue/eslint-config-typescript';
+import eslintConfigPrettier from 'eslint-config-prettier';
+import pluginVue from 'eslint-plugin-vue';
+
+export default withVueTs(
+  // Project options for the Vue + TypeScript resolution (type-aware linting).
+  { rootDir: import.meta.dirname },
+
+  // Only lint our own source; everything generated or vendored is skipped.
+  {
+    name: 'app/ignores',
+    ignores: [
+      '.output/**',
+      '.wxt/**',
+      'node_modules/**',
+      'scripts/fixtures/**',
+      'src/public/**',
+      'e2e/**',
+      'playwright-report/**',
+      'test-results/**',
+      'blob-report/**',
+    ],
+  },
+
+  { name: 'app/files', files: ['**/*.{ts,mts,vue}'] },
+
+  pluginVue.configs['flat/recommended'],
+  vueTsConfigs.recommendedTypeChecked,
+
+  {
+    name: 'app/rules',
+    rules: {
+      'vue/multi-word-component-names': 'off',
+      '@typescript-eslint/consistent-type-imports': [
+        'error',
+        {
+          prefer: 'type-imports',
+          fixStyle: 'inline-type-imports',
+        },
+      ],
+      '@typescript-eslint/no-import-type-side-effects': 'error',
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          args: 'all',
+          argsIgnorePattern: '^_',
+          caughtErrors: 'all',
+          caughtErrorsIgnorePattern: '^_',
+          destructuredArrayIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          ignoreRestSiblings: true,
+        },
+      ],
+    },
+  },
+
+  {
+    // The background message listener returns a Promise to reply asynchronously
+    // (the standard WebExtensions pattern), which is a legitimate promise in a
+    // callback slot the rule would otherwise flag.
+    name: 'app/background',
+    files: ['src/entrypoints/background.ts'],
+    rules: {
+      '@typescript-eslint/no-misused-promises': ['error', { checksVoidReturn: { arguments: false } }],
+    },
+  },
+
+  // Must stay last: turns off rules that conflict with Prettier's formatting.
+  eslintConfigPrettier,
+);

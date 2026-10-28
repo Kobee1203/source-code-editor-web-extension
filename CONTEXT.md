@@ -1,0 +1,41 @@
+# Domain Context & Ubiquitous Language — Source Code Editor
+
+This document defines the single-context domain model and ubiquitous language for **Source Code Editor**, a multi-browser WebExtension (Chrome, Firefox, Edge) delivering a VS Code-inspired IDE inside the browser.
+
+---
+
+## 1. Bounded Context Overview
+
+Source Code Editor operates as a single bounded context structured into a **3-Layer Clean Architecture**:
+
+- **Layer 1 — Domain & Infrastructure (`src/providers/`, `src/services/`, `src/types/`)**: Framework-agnostic TypeScript interfaces, domain entities, and concrete infrastructure adapters (zero Vue dependencies).
+- **Layer 2 — Reactive Orchestration (`src/composables/`)**: Vue 3 composables bridging Layer 1 services into reactive UI state.
+- **Layer 3 — UI Presentation & Entrypoints (`src/components/`, `src/entrypoints/`)**: Vue 3 Workbench components and WebExtension entrypoints (`background.ts`, `editor/`).
+
+---
+
+## 2. Ubiquitous Language Glossary
+
+| Term                        | Code Symbol / Interface                                   | Definition                                                                                                                                                                                                                                                                                                                       |
+| :-------------------------- | :-------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Workbench**               | `App.vue`, `useWorkbenchBootstrap`                        | The top-level IDE shell hosted in `editor.html`, comprising the Activity Bar, Sidebar Panel, Central Editor Area (or Welcome View), Collapsible Bottom Panel, and Status Bar.                                                                                                                                                    |
+| **Workspace**               | `WorkspaceQuery`, `WorkspaceId`                           | A logical project root opened in an editor instance, backed either by a local directory (`ChromiumLocalFsProvider` / `NativeHostFsProvider`) or an Origin Private File System directory (`OpfsProvider`). Identified via URL query (`?workspace=<id>` or `?repo=<url>`).                                                         |
+| **EditorGroup**             | `EditorGroup`                                             | A tabbed pane inside the Central Editor Area holding open document tabs and supporting horizontal/vertical split-views.                                                                                                                                                                                                          |
+| **FileSystemProvider**      | `IFileSystemProvider`                                     | Abstract contract for reading, writing, watching, and traversing files and directories (`stat`, `readFile`, `writeFile`, `readDirectory`, `createDirectory`, `delete`, `rename`, `watch`). Concrete implementations include `InMemoryFileSystemProvider`, `ChromiumLocalFsProvider`, `OpfsProvider`, and `NativeHostFsProvider`. |
+| **GitProvider**             | `IGitProvider`                                            | Abstract contract for version control operations (`clone`, `status`, `stage`, `unstage`, `commit`, `push`, `pull`, `fetch`, `listBranches`, `checkout`, `createBranch`, `diff`, `log`). Concrete implementations include `InMemoryGitProvider`, `IsomorphicGitProvider` (Approach A), and `NativeGitProvider` (Approach B).      |
+| **ExtensionCatalogService** | `IExtensionCatalogService`                                | Service managing built-in lazy-loaded language extensions and dynamic declarative extensions installed from the OpenVSX Registry.                                                                                                                                                                                                |
+| **DeclarativeExtension**    | `InstalledExtension`, `ExtensionMetadata`                 | A store-compliant VS Code extension containing purely declarative contributions (`themes`, `iconThemes`, `grammars`, `snippets`, `keybindings`, `languages`) without arbitrary third-party JavaScript execution in the browser context.                                                                                          |
+| **SettingsSyncService**     | `ISettingsSyncService`                                    | Service persisting user preferences (`EditorSettings`) in `browser.storage.sync` / `browser.storage.local` and exporting/importing sanitized profiles (strictly excluding authentication tokens).                                                                                                                                |
+| **AuthService**             | `IAuthService`                                            | Service managing OAuth and Personal Access Token (PAT) credentials for `GitHostProvider` (`github` \| `gitlab`), stored exclusively in `browser.storage.local` or `browser.storage.session`.                                                                                                                                     |
+| **NativeBridge**            | `INativeBridge`                                           | JSON-RPC 2.0 client over `browser.runtime.connectNative` (`optional_permissions: ['nativeMessaging']`) connecting the browser extension to the optional Local Companion binary.                                                                                                                                                  |
+| **RuntimeMode**             | `RuntimeMode` (`'standalone-web'` \| `'local-companion'`) | Indicates whether the Workbench is running purely in-browser via Web APIs (`standalone-web`, Approach A) or connected to the optional Local Companion native host (`local-companion`, Approach B).                                                                                                                               |
+| **LaunchMode**              | `LaunchMode` (`'tab'` \| `'popup'`)                       | User preference controlling whether clicking the extension action or global shortcut opens `editor.html` in a regular browser tab (`'tab'`) or a standalone desktop-like popup window (`'popup'`) capable of capturing browser-reserved shortcuts like `Ctrl+W` / `Cmd+W`.                                                       |
+
+---
+
+## 3. Core Domain Invariants
+
+1. **Zero Permanent Content Scripts**: The extension never injects permanent content scripts across arbitrary web pages. Repository detection on GitHub and GitLab uses declarative context menu `documentUrlPatterns` and active-tab URL parsing.
+2. **Layer 1 Purity**: Modules under `src/providers/`, `src/services/`, and `src/types/` must never import `vue` or depend on DOM/UI component state.
+3. **Store Policy & Anti-RCE Compliance**: In `standalone-web` mode, `IExtensionCatalogService` only installs extensions whose contributions are 100% declarative (`themes`, `iconThemes`, `grammars`, `snippets`, `keybindings`, `languages`). Arbitrary third-party JS/Node extension execution is reserved exclusively for `local-companion` mode.
+4. **Secret & Token Isolation**: OAuth tokens and PATs managed by `IAuthService` live exclusively in `browser.storage.local` or `browser.storage.session` and are stripped from any `ISettingsSyncService` payload (`browser.storage.sync`, Gists, or Snippets).
