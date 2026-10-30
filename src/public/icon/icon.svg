@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#111720"/>
+      <stop offset="100%" stop-color="#070a0e"/>
+    </linearGradient>
+    <linearGradient id="pencilBody" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00f2fe"/>
+      <stop offset="100%" stop-color="#0080ff"/>
+    </linearGradient>
+  </defs>
+  <!-- Squircle Background with transparent corners -->
+  <rect width="128" height="128" rx="28" fill="url(#bg)"/>
+
+  <!-- Left Chevron < -->
+  <path d="M 40 36 L 20 58 L 40 80" fill="none" stroke="#00e4ff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Right Chevron > -->
+  <path d="M 88 36 L 108 58 L 88 80" fill="none" stroke="#00e4ff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Pencil Slash / -->
+  <g transform="translate(64, 57) rotate(22) translate(-64, -57)">
+    <!-- Eraser -->
+    <path d="M 58 17 C 58 12 70 12 70 17 L 70 23 L 58 23 Z" fill="#ffffff"/>
+    <!-- Ring -->
+    <rect x="58" y="23" width="12" height="4" fill="#00e4ff"/>
+    <!-- Body -->
+    <rect x="58" y="28" width="12" height="47" fill="url(#pencilBody)" rx="1.5"/>
+    <line x1="62" y1="29" x2="62" y2="74" stroke="#ffffff" stroke-width="1.2" opacity="0.35"/>
+    <!-- Collar -->
+    <polygon points="58,75 70,75 64,94" fill="#ffffff"/>
+    <!-- Tip Lead -->
+    <polygon points="61,86 67,86 64,95" fill="#00e4ff"/>
+  </g>
+
+  <!-- Pure White Cursor _ -->
+  <line x1="49" y1="104" x2="79" y2="104" stroke="#ffffff" stroke-width="7" stroke-linecap="round"/>
+</svg>
