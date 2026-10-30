@@ -21,6 +21,6 @@ const server = createServer((req, res) => {
   res.end('Not Found');
 });
 
-server.listen(PORT, () => {
+server.listen(PORT, '127.0.0.1', () => {
   console.log(`E2E fixture server listening on http://localhost:${PORT}`);
 });

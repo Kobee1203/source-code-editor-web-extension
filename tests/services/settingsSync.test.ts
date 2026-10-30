@@ -38,7 +38,6 @@ describe('services/settingsSync', () => {
         wordWrap: true,
         autoSave: 'afterDelay',
         autoSaveDelayMs: 50,
-        launchMode: 'popup',
         shallowCloneDepth: 5000,
         token: 'ghp_super_secret_token',
         githubToken: 'ghp_another_secret',
@@ -54,7 +53,6 @@ describe('services/settingsSync', () => {
         wordWrap: true,
         autoSave: 'afterDelay',
         autoSaveDelayMs: 200,
-        launchMode: 'popup',
         shallowCloneDepth: 1000,
       });
 
@@ -67,7 +65,7 @@ describe('services/settingsSync', () => {
   });
 
   describe('BrowserSettingsSyncService', () => {
-    it('reads, updates, and resets settings while syncing launchMode key', async () => {
+    it('reads, updates, and resets settings', async () => {
       const storage = createMemoryStorage();
       const service = new BrowserSettingsSyncService(storage);
 
@@ -76,17 +74,13 @@ describe('services/settingsSync', () => {
       const updated = await service.updateSettings({
         theme: 'light',
         fontSize: 18,
-        launchMode: 'popup',
       });
 
       expect(updated.theme).toBe('light');
       expect(updated.fontSize).toBe(18);
-      expect(updated.launchMode).toBe('popup');
-      expect(storage.rawStore.launchMode).toBe('popup');
 
       const reset = await service.resetSettings();
       expect(reset).toEqual(DEFAULT_EDITOR_SETTINGS);
-      expect(storage.rawStore.launchMode).toBe('tab');
     });
 
     it('exports and imports profile payloads while stripping any injected credential fields', async () => {
@@ -116,17 +110,15 @@ describe('services/settingsSync', () => {
         settings: {
           theme: 'light',
           fontSize: 16,
-          launchMode: 'popup',
           secretToken: 'ghp_injected',
         },
         installedExtensionIds: ['ext.one', '  ', 42, 'ext.two'],
       });
 
       expect(imported.exportedAt).toBe(1700000000000);
-      expect(imported.settings.launchMode).toBe('popup');
+      expect(imported.settings.fontSize).toBe(16);
       expect('secretToken' in imported.settings).toBe(false);
       expect(imported.installedExtensionIds).toEqual(['ext.one', 'ext.two']);
-      expect(storage.rawStore.launchMode).toBe('popup');
     });
   });
 });

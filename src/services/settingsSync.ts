@@ -1,6 +1,5 @@
 import { browser } from 'wxt/browser';
 import type { KeyValueStorageArea } from '@/services/auth';
-import { type LaunchMode, isLaunchMode } from '@/types/messages';
 
 export type AutoSaveMode = 'off' | 'afterDelay' | 'onFocusChange';
 
@@ -13,7 +12,6 @@ export interface EditorSettings {
   wordWrap: boolean;
   autoSave: AutoSaveMode;
   autoSaveDelayMs: number;
-  launchMode: LaunchMode;
   shallowCloneDepth: number;
 }
 
@@ -24,7 +22,6 @@ export const DEFAULT_EDITOR_SETTINGS: Readonly<EditorSettings> = {
   wordWrap: false,
   autoSave: 'off',
   autoSaveDelayMs: 1000,
-  launchMode: 'tab',
   shallowCloneDepth: 1,
 };
 
@@ -85,7 +82,6 @@ export function sanitizeEditorSettings(
     typeof raw.autoSaveDelayMs === 'number' && Number.isFinite(raw.autoSaveDelayMs)
       ? Math.min(60_000, Math.max(200, Math.round(raw.autoSaveDelayMs)))
       : fallback.autoSaveDelayMs;
-  const launchMode = isLaunchMode(raw.launchMode) ? raw.launchMode : fallback.launchMode;
   const shallowCloneDepth =
     typeof raw.shallowCloneDepth === 'number' && Number.isFinite(raw.shallowCloneDepth)
       ? Math.min(1000, Math.max(1, Math.round(raw.shallowCloneDepth)))
@@ -98,7 +94,6 @@ export function sanitizeEditorSettings(
     wordWrap,
     autoSave,
     autoSaveDelayMs,
-    launchMode,
     shallowCloneDepth,
   };
 }
@@ -124,7 +119,6 @@ export class BrowserSettingsSyncService implements ISettingsSyncService {
     const next = sanitizeEditorSettings(merged, current);
     await this.storage.set({
       [SETTINGS_STORAGE_KEY]: next,
-      launchMode: next.launchMode,
     });
     return next;
   }
@@ -133,7 +127,6 @@ export class BrowserSettingsSyncService implements ISettingsSyncService {
     const reset = { ...DEFAULT_EDITOR_SETTINGS };
     await this.storage.set({
       [SETTINGS_STORAGE_KEY]: reset,
-      launchMode: reset.launchMode,
     });
     return reset;
   }
@@ -160,7 +153,6 @@ export class BrowserSettingsSyncService implements ISettingsSyncService {
     const sanitizedSettings = sanitizeEditorSettings(rawPayload.settings, DEFAULT_EDITOR_SETTINGS);
     await this.storage.set({
       [SETTINGS_STORAGE_KEY]: sanitizedSettings,
-      launchMode: sanitizedSettings.launchMode,
     });
 
     const installedExtensionIds: string[] = [];

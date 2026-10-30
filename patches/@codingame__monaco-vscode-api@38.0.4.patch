@@ -1,0 +1,146 @@
+diff --git a/vscode/src/vs/base/browser/dom.js b/vscode/src/vs/base/browser/dom.js
+index 571324fe4efa6d6c8d09214addecd43a79a3ac18..fec53e78145750b518eb02197169683a045b4b99 100644
+--- a/vscode/src/vs/base/browser/dom.js
++++ b/vscode/src/vs/base/browser/dom.js
+@@ -1989,7 +1989,7 @@ function setOrRemoveAttribute(element, key, value) {
+         element.setAttribute(camelCaseToHyphenCase(key), String(value));
+     }
+ }
+-mainWindow.Function(`
++(() => {
+     if (!customElements.get('connection-observer')) {
+         class ConnectionObserverElement extends HTMLElement {
+             connectedCallback() {
+@@ -2005,6 +2005,6 @@ mainWindow.Function(`
+     }
+ 
+     return customElements.get('connection-observer');
+-`)();
++})();
+ 
+ export { $, AnimationFrameScheduler, DetectedFullscreenMode, Dimension, DisposableResizeObserver, DragAndDropObserver, EventHelper, EventType, LiveElement, ModifierKeyEmitter, Namespace, ObserverNode, ObserverNodeWithElement, SafeTriangle, WindowIdleValue, WindowIntervalTimer, addDisposableGenericMouseDownListener, addDisposableGenericMouseMoveListener, addDisposableGenericMouseUpListener, addDisposableListener, addDisposableThrottledListener, addStandardDisposableGenericMouseDownListener, addStandardDisposableGenericMouseUpListener, addStandardDisposableListener, after, animate, append, clearNode, computeScreenAwareSize, copyAttributes, createDocumentFragment, createElement, createElementNS, createLinkElement, createMetaElement, createTextNode, detectFullscreen, disposableWindowInterval, finalHandler, findParentWithClass, getActiveDocument, getActiveElement, getActiveWindow, getClientArea, getComputedStyle, getContentHeight, getContentWidth, getDocument, getDomNodePagePosition, getDomNodeZoomLevel, getExternalFocusWindow, getFullscreenElement, getLargestChildWidth, getRecentDisposableResizeObserverContextForLoopError, getRootContainer, getShadowRoot, getTopLeftOffset, getTotalHeight, getTotalScrollWidth, getTotalWidth, getWindow, getWindowById, getWindowId, getWindows, getWindowsCount, h, hasAppFocus, hasExternalFocus, hasParentWithClass, hide, isActiveDocument, isActiveElement, isAncestor, isAncestorOfActiveElement, isAncestorUsingFlowTo, isDragEvent, isEditableElement, isElement, isEventLike, isHTMLAnchorElement, isHTMLButtonElement, isHTMLDivElement, isHTMLElement, isHTMLIframeElement, isHTMLInputElement, isHTMLTextAreaElement, isInShadowDOM, isKeyboardEvent, isMouseEvent, isPointerEvent, isSVGElement, isShadowRoot, measure, modify, n, onDidRegisterWindow, onDidUnregisterWindow, onWillUnregisterWindow, position, prepend, registerWindow, releaseReservedWindowForExternalOpen, reserveWindowForExternalOpen, reset, restoreParentsScrollTop, runAtThisOrScheduleAtNextAnimationFrame, runWhenWindowIdle, saveParentsScrollTop, scheduleAtNextAnimationFrame, setParentFlowTo, setVisibility, sharedMutationObserver, show, size, svgElem, trackActiveElement, trackAttributes, trackFocus, triggerDownload, triggerUpload, windowOpenNoOpener, windowOpenPopup, windowOpenWithSuccess };
+diff --git a/vscode/src/vs/workbench/api/worker/extHostExtensionService.js b/vscode/src/vs/workbench/api/worker/extHostExtensionService.js
+index 2c914337ecb3ae2dbded188d5f8f5bc780fbacea..fe6370355df0b89badd16f4b433e2d80934e60aa 100644
+--- a/vscode/src/vs/workbench/api/worker/extHostExtensionService.js
++++ b/vscode/src/vs/workbench/api/worker/extHostExtensionService.js
+@@ -68,17 +68,50 @@ class ExtHostExtensionService extends AbstractExtHostExtensionService {
+         const sourceURL = `${( module.toString(true))}#vscode-extension`;
+         const fullSource = `${source}\n//# sourceURL=${sourceURL}`;
+         let initFn;
++        let isScriptFallback = false;
+         try {
+             initFn = ( new Function("module", "exports", "require", fullSource));
+         } catch (err) {
+-            if (extensionId) {
+-                console.error(`Loading code for extension ${extensionId} failed: ${err.message}`);
++            if (typeof document !== 'undefined') {
++                isScriptFallback = true;
++                initFn = async (_m, _e, _r) => {
++                    const prevModule = globalThis.module;
++                    const prevExports = globalThis.exports;
++                    const prevRequire = globalThis.require;
++                    globalThis.module = _m;
++                    globalThis.exports = _e;
++                    globalThis.require = _r;
++                    try {
++                        const scriptUrl = browserUri.toString(true);
++                        await new Promise((resolve, reject) => {
++                            const script = document.createElement('script');
++                            script.src = scriptUrl;
++                            script.onload = () => {
++                                script.remove();
++                                resolve();
++                            };
++                            script.onerror = () => {
++                                script.remove();
++                                reject(new Error(`Failed to load extension script: ${scriptUrl}`));
++                            };
++                            (document.head || document.documentElement).appendChild(script);
++                        });
++                    } finally {
++                        globalThis.module = prevModule;
++                        globalThis.exports = prevExports;
++                        globalThis.require = prevRequire;
++                    }
++                };
+             } else {
+-                console.error(`Loading code failed: ${err.message}`);
++                if (extensionId) {
++                    console.error(`Loading code for extension ${extensionId} failed: ${err.message}`);
++                } else {
++                    console.error(`Loading code failed: ${err.message}`);
++                }
++                console.error(`${( module.toString(true))}${typeof err.line === "number" ? ` line ${err.line}` : ""}${typeof err.column === "number" ? ` column ${err.column}` : ""}`);
++                console.error(err);
++                throw err;
+             }
+-            console.error(`${( module.toString(true))}${typeof err.line === "number" ? ` line ${err.line}` : ""}${typeof err.column === "number" ? ` column ${err.column}` : ""}`);
+-            console.error(err);
+-            throw err;
+         }
+         if (extension) {
+             await this._extHostLocalizationService.initializeLocalizedMessages(extension);
+@@ -99,7 +132,11 @@ class ExtHostExtensionService extends AbstractExtHostExtensionService {
+             if (extensionId) {
+                 performance.mark(`code/extHost/willLoadExtensionCode/${extensionId}`);
+             }
+-            initFn(_module, _exports, _require);
++            if (isScriptFallback) {
++                await initFn(_module, _exports, _require);
++            } else {
++                initFn(_module, _exports, _require);
++            }
+             return (_module.exports !== _exports ? _module.exports : _exports);
+         } finally {
+             if (extensionId) {
+diff --git a/vscode/src/vs/workbench/contrib/customEditor/browser/customEditorInput.js b/vscode/src/vs/workbench/contrib/customEditor/browser/customEditorInput.js
+index ea27962..41eaeb2 100644
+--- a/vscode/src/vs/workbench/contrib/customEditor/browser/customEditorInput.js
++++ b/vscode/src/vs/workbench/contrib/customEditor/browser/customEditorInput.js
+@@ -43,7 +43,7 @@ class CustomEditorInput extends AbstractResourceEditorInput {
+         }
+     }
+     async applyOptions(options, token) {
+-        const selection = options.selection;
++        const selection = options?.selection;
+         if (this.navigation && selection && !token.isCancellationRequested) {
+             const range = ( new Range(
+                 selection.startLineNumber,
+@@ -54,7 +54,7 @@ class CustomEditorInput extends AbstractResourceEditorInput {
+             await this.navigation.revealRange(
+                 range,
+                 Selection.fromRange(range, SelectionDirection.LTR),
+-                !!options.preserveFocus,
++                !!options?.preserveFocus,
+                 token
+             );
+         }
+diff --git a/vscode/src/vs/workbench/contrib/webview/common/webview.js b/vscode/src/vs/workbench/contrib/webview/common/webview.js
+index 474a2b9..194e9eb 100644
+--- a/vscode/src/vs/workbench/contrib/webview/common/webview.js
++++ b/vscode/src/vs/workbench/contrib/webview/common/webview.js
+@@ -1,7 +1,7 @@
+ 
+ import { CharCode } from '../../../../base/common/charCode.js';
+-import { Schemas } from '../../../../base/common/network.js';
++import { Schemas, FileAccess } from '../../../../base/common/network.js';
+ import { URI } from '../../../../base/common/uri.js';
+ 
+ const webviewResourceBaseHost = "vscode-cdn.net";
+ const webviewRootResourceAuthority = `vscode-resource.${webviewResourceBaseHost}`;
+@@ -17,6 +17,14 @@ function asWebviewUri(resource, remoteInfo) {
+             path: resource.path
+         }));
+     }
++    try {
++        const browserUri = FileAccess.uriToBrowserUri(resource);
++        if (browserUri && browserUri.scheme !== resource.scheme) {
++            return browserUri;
++        }
++    } catch {
++        // fallback
++    }
+     return ( URI.from({
+         scheme: Schemas.https,
+         authority: `${resource.scheme}+${encodeAuthority(resource.authority)}.${webviewRootResourceAuthority}`,
+

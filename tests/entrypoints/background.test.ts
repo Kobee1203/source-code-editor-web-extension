@@ -1,10 +1,6 @@
 import { mockBrowser, registeredListeners } from '@@/tests/setup';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import background, {
-  COMMAND_OPEN_EDITOR_ID,
-  CONTEXT_MENU_OPEN_REPO_ID,
-  LAUNCH_MODE_STORAGE_KEY,
-} from '@/entrypoints/background';
+import background, { COMMAND_OPEN_EDITOR_ID, CONTEXT_MENU_OPEN_REPO_ID } from '@/entrypoints/background';
 
 describe('entrypoints/background', () => {
   beforeEach(() => {
@@ -27,11 +23,11 @@ describe('entrypoints/background', () => {
     });
   });
 
-  it('opens editor in a tab by default on action.onClicked and attaches repo query when active tab is GitHub/GitLab', async () => {
+  it('opens editor in a tab on action.onClicked and attaches repo query when active tab is GitHub/GitLab', async () => {
     const onActionClicked = registeredListeners.onActionClicked[0];
     expect(onActionClicked).toBeDefined();
 
-    onActionClicked?.({ id: 10, url: 'https://example.com' });
+    onActionClicked?.({ id: 10, url: 'https://developer.mozilla.org/en-US/' });
     await vi.waitFor(() => {
       expect(mockBrowser.tabs.create).toHaveBeenCalledWith({
         url: 'chrome-extension://dummy-id/editor.html',
@@ -42,24 +38,6 @@ describe('entrypoints/background', () => {
     await vi.waitFor(() => {
       expect(mockBrowser.tabs.create).toHaveBeenCalledWith({
         url: 'chrome-extension://dummy-id/editor.html?repo=https%3A%2F%2Fgithub.com%2Foctocat%2FHello-World',
-      });
-    });
-  });
-
-  it('opens editor in a standalone popup window when launchMode is popup in storage.local', async () => {
-    mockBrowser.storage.local.get.mockResolvedValue({
-      [LAUNCH_MODE_STORAGE_KEY]: 'popup',
-    });
-
-    const onActionClicked = registeredListeners.onActionClicked[0];
-    onActionClicked?.({ id: 12, url: 'https://gitlab.com/gitlab-org/gitlab' });
-
-    await vi.waitFor(() => {
-      expect(mockBrowser.windows.create).toHaveBeenCalledWith({
-        url: 'chrome-extension://dummy-id/editor.html?repo=https%3A%2F%2Fgitlab.com%2Fgitlab-org%2Fgitlab',
-        type: 'popup',
-        width: 1440,
-        height: 900,
       });
     });
   });
@@ -102,62 +80,40 @@ describe('entrypoints/background', () => {
     });
   });
 
-  it('routes runtime.onMessage requests for OPEN_EDITOR, OPEN_REPOSITORY, GET_LAUNCH_MODE, and SET_LAUNCH_MODE', async () => {
+  it('routes runtime.onMessage requests for OPEN_EDITOR and OPEN_REPOSITORY', async () => {
     const onMessage = registeredListeners.onMessage[0];
     expect(onMessage).toBeDefined();
 
     expect(onMessage?.({ type: 'PING_NATIVE_HOST' })).toBeUndefined();
     expect(onMessage?.(null)).toBeUndefined();
 
-    const getModeRes = await onMessage?.({ type: 'GET_LAUNCH_MODE' });
-    expect(getModeRes).toEqual({
-      ok: true,
-      launchMode: 'tab',
-    });
-
-    const setModeRes = await onMessage?.({
-      type: 'SET_LAUNCH_MODE',
-      launchMode: 'popup',
-    });
-    expect(setModeRes).toEqual({
-      ok: true,
-      launchMode: 'popup',
-    });
-    expect(mockBrowser.storage.local.set).toHaveBeenCalledWith({
-      [LAUNCH_MODE_STORAGE_KEY]: 'popup',
-    });
-
     const openEditorRes = await onMessage?.({
       type: 'OPEN_EDITOR',
       workspaceId: 'ws-demo',
-      launchMode: 'popup',
     });
     expect(openEditorRes).toEqual({
       ok: true,
-      launchMode: 'popup',
-      windowId: 100,
+      tabId: 1,
       editorUrl: 'chrome-extension://dummy-id/editor.html?workspace=ws-demo',
     });
 
     const openValidRepoRes = await onMessage?.({
       type: 'OPEN_REPOSITORY',
       repoUrl: 'https://github.com/octocat/Hello-World/pulls',
-      launchMode: 'tab',
     });
     expect(openValidRepoRes).toEqual({
       ok: true,
-      launchMode: 'tab',
       tabId: 1,
       editorUrl: 'chrome-extension://dummy-id/editor.html?repo=https%3A%2F%2Fgithub.com%2Foctocat%2FHello-World',
     });
 
     const openInvalidRepoRes = await onMessage?.({
       type: 'OPEN_REPOSITORY',
-      repoUrl: 'https://github.com/settings/profile',
+      repoUrl: 'https://example.com/not-a-repo',
     });
     expect(openInvalidRepoRes).toEqual({
       ok: false,
-      error: 'Unsupported repository URL: https://github.com/settings/profile',
+      error: 'Unsupported repository URL: https://example.com/not-a-repo',
     });
   });
 });

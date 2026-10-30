@@ -17,8 +17,8 @@ export default defineConfig({
   retries: 0,
   /* Auto-start the fixture server before tests */
   webServer: {
-    command: 'tsx e2e/server/start.ts',
-    port: 4173,
+    command: 'pnpm exec tsx e2e/server/start.ts',
+    url: 'http://127.0.0.1:4173/health',
     reuseExistingServer: !process.env.CI,
   },
 });

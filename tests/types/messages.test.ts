@@ -3,27 +3,11 @@ import {
   buildEditorPath,
   buildEditorUrl,
   extractRepositoryUrlFromTabUrl,
-  isLaunchMode,
   isRuntimeMessage,
   parseEditorQueryParams,
 } from '@/types/messages';
 
 describe('types/messages', () => {
-  describe('isLaunchMode', () => {
-    it('returns true for valid launch modes', () => {
-      expect(isLaunchMode('tab')).toBe(true);
-      expect(isLaunchMode('popup')).toBe(true);
-    });
-
-    it('returns false for invalid launch modes', () => {
-      expect(isLaunchMode('window')).toBe(false);
-      expect(isLaunchMode('')).toBe(false);
-      expect(isLaunchMode(null)).toBe(false);
-      expect(isLaunchMode(undefined)).toBe(false);
-      expect(isLaunchMode(42)).toBe(false);
-    });
-  });
-
   describe('isRuntimeMessage', () => {
     it('validates OPEN_EDITOR messages', () => {
       expect(isRuntimeMessage({ type: 'OPEN_EDITOR' })).toBe(true);
@@ -32,12 +16,10 @@ describe('types/messages', () => {
           type: 'OPEN_EDITOR',
           workspaceId: 'ws-1',
           repoUrl: 'https://github.com/octocat/Hello-World',
-          launchMode: 'popup',
         }),
       ).toBe(true);
       expect(isRuntimeMessage({ type: 'OPEN_EDITOR', workspaceId: 123 })).toBe(false);
       expect(isRuntimeMessage({ type: 'OPEN_EDITOR', repoUrl: false })).toBe(false);
-      expect(isRuntimeMessage({ type: 'OPEN_EDITOR', launchMode: 'fullscreen' })).toBe(false);
     });
 
     it('validates OPEN_REPOSITORY messages', () => {
@@ -51,26 +33,10 @@ describe('types/messages', () => {
         isRuntimeMessage({
           type: 'OPEN_REPOSITORY',
           repoUrl: 'https://gitlab.com/gitlab-org/gitlab',
-          launchMode: 'tab',
         }),
       ).toBe(true);
       expect(isRuntimeMessage({ type: 'OPEN_REPOSITORY', repoUrl: '   ' })).toBe(false);
       expect(isRuntimeMessage({ type: 'OPEN_REPOSITORY' })).toBe(false);
-      expect(
-        isRuntimeMessage({
-          type: 'OPEN_REPOSITORY',
-          repoUrl: 'https://github.com/octocat/Hello-World',
-          launchMode: 'invalid',
-        }),
-      ).toBe(false);
-    });
-
-    it('validates GET_LAUNCH_MODE and SET_LAUNCH_MODE messages', () => {
-      expect(isRuntimeMessage({ type: 'GET_LAUNCH_MODE' })).toBe(true);
-      expect(isRuntimeMessage({ type: 'SET_LAUNCH_MODE', launchMode: 'tab' })).toBe(true);
-      expect(isRuntimeMessage({ type: 'SET_LAUNCH_MODE', launchMode: 'popup' })).toBe(true);
-      expect(isRuntimeMessage({ type: 'SET_LAUNCH_MODE', launchMode: 'invalid' })).toBe(false);
-      expect(isRuntimeMessage({ type: 'SET_LAUNCH_MODE' })).toBe(false);
     });
 
     it('rejects non-objects and unknown message types', () => {
