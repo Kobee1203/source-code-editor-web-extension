@@ -81,7 +81,7 @@ In **Jalon 1 (Workbench Layout & Monaco Editor / VS Code Services Integration)**
     - `@codingame/monaco-vscode-extensions-service-override` (configured with `enableWorkerExtensionHost: false` and `vscode/localExtensionHost`)
     - `@codingame/monaco-vscode-preferences-service-override`
     - `@codingame/monaco-vscode-quickaccess-service-override`
-    - `@codingame/monaco-vscode-statusbar-service-override`
+    - `@codingame/monaco-vscode-view-status-bar-service-override`
     - `@codingame/monaco-vscode-snippets-service-override`
 
 - **Virtual File System & Workspace Initialization**:

@@ -274,9 +274,6 @@ importers:
       '@codingame/monaco-vscode-snippets-service-override':
         specifier: 38.0.4
         version: 38.0.4
-      '@codingame/monaco-vscode-statusbar-service-override':
-        specifier: npm:@codingame/monaco-vscode-view-status-bar-service-override@38.0.4
-        version: '@codingame/monaco-vscode-view-status-bar-service-override@38.0.4'
       '@codingame/monaco-vscode-testing-service-override':
         specifier: 38.0.4
         version: 38.0.4(@xterm/xterm@6.1.0-beta.304)
@@ -313,9 +310,6 @@ importers:
       '@codingame/monaco-vscode-yaml-default-extension':
         specifier: 38.0.4
         version: 38.0.4
-      '@lucide/vue':
-        specifier: ^1.59.0
-        version: 1.62.0(vue@3.5.44(typescript@6.0.3))
       '@wxt-dev/i18n':
         specifier: ^0.2.8
         version: 0.2.8(wxt@0.21.5(esbuild@0.28.2)(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(rolldown@1.2.15)(typescript@6.0.3)(vite@8.3.5(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1))(web-ext@10.8.0(jiti@2.7.0)(supports-color@10.2.2)))
@@ -1098,11 +1092,6 @@ packages:
 
   '@keyv/serialize@1.1.1':
     resolution: {integrity: sha512-dXn3FZhPv0US+7dtJsIi2R+c7qWYiReoEh5zUntWCf4oSpMNib8FDhSoed6m3QyZdx5hK7iLFkYk3rNxwt8vTA==}
-
-  '@lucide/vue@1.62.0':
-    resolution: {integrity: sha512-uuVefuSb79HC/XBRIL4AFlIOx4nezJ/DmyeiHQTejQ9odF265SksOKjXbBW6kyDDIJimBh+3LYR4wz/da0aqRA==}
-    peerDependencies:
-      vue: '>=3.0.1'
 
   '@mdn/browser-compat-data@8.1.4':
     resolution: {integrity: sha512-Cgp3OP3u9x57kT1sZPI115SP5H1IyaBhdDPnvnHRYZ1988kW83wuqcIdcMinLJXlMKOL5Y2cufWHzngh5cVtow==}
@@ -4447,10 +4436,6 @@ snapshots:
       keyv: 5.6.0
 
   '@keyv/serialize@1.1.1': {}
-
-  '@lucide/vue@1.62.0(vue@3.5.44(typescript@6.0.3))':
-    dependencies:
-      vue: 3.5.44(typescript@6.0.3)
 
   '@mdn/browser-compat-data@8.1.4': {}
 

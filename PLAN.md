@@ -75,7 +75,7 @@ This document records all **17 architectural decisions** resolved during the _Gr
       - `@codingame/monaco-vscode-extensions-service-override` (Extensions view slot with `enableWorkerExtensionHost: false` via `vscode/localExtensionHost`)
       - `@codingame/monaco-vscode-preferences-service-override` (Settings editor & keybindings)
       - `@codingame/monaco-vscode-quickaccess-service-override` (Command palette & quick pick)
-      - `@codingame/monaco-vscode-statusbar-service-override` (native status bar)
+      - `@codingame/monaco-vscode-view-status-bar-service-override` (native status bar)
       - `@codingame/monaco-vscode-snippets-service-override` (language snippets)
   - **Web Workers & Manifest V3 CSP**:
     - Extension workers are compiled as dedicated WXT unlisted scripts (`src/entrypoints/monaco-editor.worker.ts` and `src/entrypoints/monaco-textmate.worker.ts`) and loaded via `browser.runtime.getURL(...)` as `'self'`. This complies strictly with Chrome MV3 CSP (`worker-src 'self';`) and eliminates renderer crashes (`RESULT_CODE_KILLED_BAD_MESSAGE`).
