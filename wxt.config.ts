@@ -24,30 +24,6 @@ export default defineConfig({
           configResolved(config) {
             outDir = config.build.outDir;
           },
-          transform(code, id) {
-            // Replace mainWindow.Function(`...`) for connection-observer with a direct IIFE
-            // to comply with Chrome Manifest V3 CSP (no 'unsafe-eval' allowed).
-            if (id.includes('vs/base/browser/dom') && code.includes('connection-observer')) {
-              return code.replace(
-                /mainWindow\.Function\(`[\s\S]*?return customElements\.get\('connection-observer'\);[\s\S]*?`\)\(\);?/,
-                `(() => {
-                  if (!customElements.get('connection-observer')) {
-                    class ConnectionObserverElement extends HTMLElement {
-                      connectedCallback() {
-                        this.onDidConnect?.();
-                      }
-                      disconnectedCallback() {
-                        this.onDidDisconnect?.();
-                      }
-                    }
-                    customElements.define('connection-observer', ConnectionObserverElement);
-                  }
-                  return customElements.get('connection-observer');
-                })();`,
-              );
-            }
-            return null;
-          },
           generateBundle(_options, bundle) {
             for (const [fileName, item] of Object.entries(bundle)) {
               // WXT's moveHtmlFiles treats all *.html files as extension entrypoints.
