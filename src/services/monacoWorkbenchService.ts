@@ -255,27 +255,6 @@ export class NativeMonacoEngineAdapter implements IMonacoEngineAdapter {
         ]);
 
         // 5. Seed initial workspace files in /workspace using RegisteredFileSystemProvider
-        const defaultLanguages = [
-          { id: 'markdown', extensions: ['.md', '.mkd', '.markdown'], aliases: ['Markdown', 'markdown'] },
-          { id: 'typescript', extensions: ['.ts', '.tsx'], aliases: ['TypeScript', 'ts', 'typescript'] },
-          {
-            id: 'javascript',
-            extensions: ['.js', '.jsx', '.mjs', '.cjs'],
-            aliases: ['JavaScript', 'javascript', 'js'],
-          },
-          { id: 'json', extensions: ['.json'], aliases: ['JSON', 'json'] },
-          { id: 'html', extensions: ['.html', '.htm'], aliases: ['HTML', 'html'] },
-          { id: 'css', extensions: ['.css'], aliases: ['CSS', 'css'] },
-          { id: 'yaml', extensions: ['.yaml', '.yml'], aliases: ['YAML', 'yaml'] },
-          { id: 'python', extensions: ['.py'], aliases: ['Python', 'py', 'python'] },
-          { id: 'rust', extensions: ['.rs'], aliases: ['Rust', 'rust'] },
-          { id: 'go', extensions: ['.go'], aliases: ['Go', 'go'] },
-          { id: 'shellscript', extensions: ['.sh', '.bash'], aliases: ['Shell Script', 'shellscript', 'bash'] },
-        ];
-        for (const lang of defaultLanguages) {
-          monaco.languages.register(lang);
-        }
-
         const fileSystemProvider = new RegisteredFileSystemProvider(false);
 
         const workspaceConfigContent = JSON.stringify(
@@ -335,13 +314,6 @@ export class NativeMonacoEngineAdapter implements IMonacoEngineAdapter {
           JSON.stringify({
             'workbench.iconTheme': 'vs-seti',
             'workbench.colorTheme': 'Dark Modern',
-            'files.associations': {
-              '*.md': 'markdown',
-              '*.markdown': 'markdown',
-              '*.ts': 'typescript',
-              '*.js': 'javascript',
-              '*.json': 'json',
-            },
           }),
         );
 

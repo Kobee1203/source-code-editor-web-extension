@@ -119,6 +119,9 @@ test.describe('Source Code Editor Workbench E2E', () => {
     await expect(statusbar.locator('.statusbar-item').first()).toBeVisible();
     await expect(statusbar).toContainText(/(Ln \d+, Col \d+|L \d+, col \d+|UTF-8|Layout)/);
 
+    // Language mode is resolved natively by the default language extensions (no manual registration)
+    await expect(statusbar).toContainText('TypeScript', { timeout: 10_000 });
+
     // 8. Verify strictly zero console errors, zero page errors, and zero CSP violations
     const cspErrors = pageErrors.filter((e) => e.includes('EvalError') || e.includes('Content Security Policy'));
     expect(cspErrors).toEqual([]);
@@ -248,6 +251,7 @@ test.describe('Source Code Editor Workbench E2E', () => {
     await expect(breadcrumbs).toBeVisible({ timeout: 10_000 });
     await expect(breadcrumbs).toContainText('package.json');
 
+    await expect(statusbar).toContainText('JSON', { timeout: 10_000 });
     await expect(statusbar).toContainText(/(L \d+, col \d+|Ln \d+, Col \d+|UTF-8|Layout)/);
 
     // Verify strictly zero console errors, zero page errors, and zero CSP violations
